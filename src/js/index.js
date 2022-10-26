@@ -19,31 +19,10 @@
 const $ = (selector) => document.querySelector(selector);
 
 function App() {
-  const updateMenuCount = () => {
+  const updateMenuItemCount = () => {
     const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
     $(".menu-count").innerText = `총 ${menuCount}개`;
   };
-
-  $("#espresso-menu-list").addEventListener("click", (e) => {
-    if (e.target.classList.contains("menu-edit-button")) {
-      const $menuName = e.target.closest("li").querySelector(".menu-name");
-      const newMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
-      if (newMenuName) {
-        $menuName.innerText = newMenuName;
-      }
-    }
-
-    if (e.target.classList.contains("menu-remove-button")) {
-      if (confirm("정말 삭제하시겠습니까?")) {
-        e.target.closest("li").remove();
-        updateMenuCount();
-      }
-    }
-  });
-
-  $("#espresso-menu-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-  });
 
   const addMenuItem = () => {
     if ($("#espresso-menu-name").value === "") {
@@ -72,13 +51,40 @@ function App() {
       "beforeend",
       menuItemTemplate($espressoMenuName)
     );
-    updateMenuCount();
+    updateMenuItemCount();
     $("#espresso-menu-name").value = "";
   };
 
-  $("#espresso-menu-submit-button").addEventListener("click", () => {
-    addMenuItem();
+  const updateMenuItem = (e) => {
+    const $menuName = e.target.closest("li").querySelector(".menu-name");
+    const newMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
+    if (newMenuName) {
+      $menuName.innerText = newMenuName;
+    }
+  };
+
+  const removeMenuItem = (e) => {
+    if (confirm("정말 삭제하시겠습니까?")) {
+      e.target.closest("li").remove();
+      updateMenuItemCount();
+    }
+  };
+
+  $("#espresso-menu-list").addEventListener("click", (e) => {
+    if (e.target.classList.contains("menu-edit-button")) {
+      updateMenuItem(e);
+    }
+
+    if (e.target.classList.contains("menu-remove-button")) {
+      removeMenuItem(e);
+    }
   });
+
+  $("#espresso-menu-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
+
+  $("#espresso-menu-submit-button").addEventListener("click", addMenuItem);
 
   $("#espresso-menu-name").addEventListener("keypress", (e) => {
     if (e.key !== "Enter") {
