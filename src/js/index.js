@@ -1,24 +1,42 @@
 // step1 요구사항 구현
 // TODO 메뉴 추가
 // - [x] 메뉴의 이름을 입력 받고 엔터키를 누르면 메뉴가 추가된다.
-// - [ ] 메뉴의 이름을 입력 받고 확인 버튼을 클릭하면 메뉴가 추가된다.
+// - [x] 메뉴의 이름을 입력 받고 확인 버튼을 클릭하면 메뉴가 추가된다.
 // - [x]추가되는 메뉴의 아래 마크업은 `<ul id="espresso-menu-list" class="mt-3 pl-0"></ul>` 안에 삽입해야 한다.
 // - [x] 총 메뉴 갯수를 count하여 상단에 보여준다.
 // - [x] 메뉴가 추가되면, input은 빈 값으로 초기화한다.
 // - [x] input이 빈 값일 때, 메뉴가 추가되지 않도록 한다.
 
+// TODO 메뉴 수정
+// - [x] 메뉴의 수정 버튼을 누르면 prompt가 나타난다.
+// - [x] prompt에 값을 입력하면 메뉴 이름이 수정된다.
+
+// TODO 메뉴 삭제
+// - [x] 메뉴의 삭제 버튼을 누르면 confirm이 나타난다.
+// - [x] confirm의 확인 버튼을 누르면 메뉴가 삭제된다.
+// - [x] 총 메뉴 갯수를 count하여 상단에 보여준다.
+
 const $ = (selector) => document.querySelector(selector);
 
 function App() {
-  // TODO 메뉴 수정
-  // - [ ] 메뉴의 수정 버튼을 누르면 prompt가 나타난다.
-  // - [ ] prompt에 값을 입력하면 메뉴 이름이 수정된다.
+  const updateMenuCount = () => {
+    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
+    $(".menu-count").innerText = `총 ${menuCount}개`;
+  };
+
   $("#espresso-menu-list").addEventListener("click", (e) => {
     if (e.target.classList.contains("menu-edit-button")) {
       const $menuName = e.target.closest("li").querySelector(".menu-name");
       const newMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
       if (newMenuName) {
         $menuName.innerText = newMenuName;
+      }
+    }
+
+    if (e.target.classList.contains("menu-remove-button")) {
+      if (confirm("정말 삭제하시겠습니까?")) {
+        e.target.closest("li").remove();
+        updateMenuCount();
       }
     }
   });
@@ -54,8 +72,7 @@ function App() {
       "beforeend",
       menuItemTemplate($espressoMenuName)
     );
-    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
-    $(".menu-count").innerText = `총 ${menuCount}개`;
+    updateMenuCount();
     $("#espresso-menu-name").value = "";
   };
 
@@ -72,8 +89,3 @@ function App() {
 }
 
 App();
-
-// TODO 메뉴 삭제
-// - [ ] 메뉴의 삭제 버튼을 누르면 confirm이 나타난다.
-// - [ ] confirm의 확인 버튼을 누르면 메뉴가 삭제된다.
-// - [ ] 총 메뉴 갯수를 count하여 상단에 보여준다.
