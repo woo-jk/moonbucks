@@ -10,6 +10,19 @@
 const $ = (selector) => document.querySelector(selector);
 
 function App() {
+  // TODO 메뉴 수정
+  // - [ ] 메뉴의 수정 버튼을 누르면 prompt가 나타난다.
+  // - [ ] prompt에 값을 입력하면 메뉴 이름이 수정된다.
+  $("#espresso-menu-list").addEventListener("click", (e) => {
+    if (e.target.classList.contains("menu-edit-button")) {
+      const $menuName = e.target.closest("li").querySelector(".menu-name");
+      const newMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
+      if (newMenuName) {
+        $menuName.innerText = newMenuName;
+      }
+    }
+  });
+
   $("#espresso-menu-form").addEventListener("submit", (e) => {
     e.preventDefault();
   });
@@ -59,10 +72,6 @@ function App() {
 }
 
 App();
-
-// TODO 메뉴 수정
-// - [ ] 메뉴의 수정 버튼을 누르면 prompt가 나타난다.
-// - [ ] prompt에 값을 입력하면 메뉴 이름이 수정된다.
 
 // TODO 메뉴 삭제
 // - [ ] 메뉴의 삭제 버튼을 누르면 confirm이 나타난다.
