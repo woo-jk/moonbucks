@@ -112,4 +112,4 @@ function App() {
   });
 }
 
-App();
+const app = new App();
