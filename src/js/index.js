@@ -1,24 +1,39 @@
-// step1 요구사항 구현
-// TODO 메뉴 추가
-// - [x] 메뉴의 이름을 입력 받고 엔터키를 누르면 메뉴가 추가된다.
-// - [x] 메뉴의 이름을 입력 받고 확인 버튼을 클릭하면 메뉴가 추가된다.
-// - [x]추가되는 메뉴의 아래 마크업은 `<ul id="espresso-menu-list" class="mt-3 pl-0"></ul>` 안에 삽입해야 한다.
-// - [x] 총 메뉴 갯수를 count하여 상단에 보여준다.
-// - [x] 메뉴가 추가되면, input은 빈 값으로 초기화한다.
-// - [x] input이 빈 값일 때, 메뉴가 추가되지 않도록 한다.
+// step2
+// TODO localStorage
+// - [ ] localStorage에 데이터를 저장한다.
+// - [ ] 새로고침 할 때 localStarage에서 데이터를 가져온다.
 
-// TODO 메뉴 수정
-// - [x] 메뉴의 수정 버튼을 누르면 prompt가 나타난다.
-// - [x] prompt에 값을 입력하면 메뉴 이름이 수정된다.
+// TODO 카테고리별 메뉴판 관리
+// - [ ] 에스프레소 메뉴판 관리
+// - [ ] 프라푸치노 메뉴판 관리
+// - [ ] 블렌디드 메뉴판 관리
+// - [ ] 티바나 메뉴판 관리
+// - [ ] 디저트 메뉴판 관리
 
-// TODO 메뉴 삭제
-// - [x] 메뉴의 삭제 버튼을 누르면 confirm이 나타난다.
-// - [x] confirm의 확인 버튼을 누르면 메뉴가 삭제된다.
-// - [x] 총 메뉴 갯수를 count하여 상단에 보여준다.
+// TODO 페이지 접근시 최초 데이터
+// - [ ] 페이지에 최초로 로딩될 때 localStorage의 에스프레소 메뉴를 읽어온다.
+// - [ ] 에스프레소 메뉴를 페이지에 그려준다.
+
+// TODO 품절 관리
+// - [ ] 품절 버튼을 추가한다.
+// - [ ] sold-out class를 추가해서 상태를 변경한다.
+// - [ ] 품절 버튼을 클릭하면 localStorage에 상태값이 저장된다.
+// - [ ] 클릭시 품절 상태를 추가한다.
 
 const $ = (selector) => document.querySelector(selector);
 
+const store = {
+  setLocalStorage(menu) {
+    localStorage.setItem("menu", JSON.stringify(menu));
+  },
+  getLocalStorage() {
+    localStorage.getItem("menu");
+  },
+};
+
 function App() {
+  this.menu = [];
+
   const updateMenuItemCount = () => {
     const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
     $(".menu-count").innerText = `총 ${menuCount}개`;
@@ -29,28 +44,31 @@ function App() {
       alert("값을 입력해주세요.");
       return;
     }
-    const $espressoMenuName = $("#espresso-menu-name").value;
-    const menuItemTemplate = (espressoMenuName) => {
-      return `<li class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
-        <button
-          type="button"
-          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
-        >
-          수정
-        </button>
-        <button
-          type="button"
-          class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
-        >
-          삭제
-        </button>
-      </li>`;
-    };
-    $("#espresso-menu-list").insertAdjacentHTML(
-      "beforeend",
-      menuItemTemplate($espressoMenuName)
-    );
+    const espressoMenuName = $("#espresso-menu-name").value;
+    this.menu.push({ name: espressoMenuName });
+    store.setLocalStorage(this.menu);
+
+    const template = this.menu
+      .map((item) => {
+        return `<li class="menu-list-item d-flex items-center py-2">
+      <span class="w-100 pl-2 menu-name">${item.name}</span>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
+      >
+        수정
+      </button>
+      <button
+        type="button"
+        class="bg-gray-50 text-gray-500 text-sm menu-remove-button"
+      >
+        삭제
+      </button>
+    </li>`;
+      })
+      .join("");
+
+    $("#espresso-menu-list").innerHTML = template;
     updateMenuItemCount();
     $("#espresso-menu-name").value = "";
   };
